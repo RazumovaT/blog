@@ -1,0 +1,85 @@
+.post {
+  width: 940px;
+  min-height: 870px;
+  margin-top: 2rem;
+}
+.header {
+  display: grid;
+  grid-template-columns: 1fr 90px 50px;
+  grid-template-areas:
+    "container  name avatar"
+    "tags  date avatar";
+  justify-items: start;
+  align-items: center;
+}
+.likesButton {
+  color: inherit;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  grid-area: button;
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+}
+.title {
+  grid-area: title;
+  color: rgba(24, 144, 255, 1);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 22px;
+}
+.name {
+  grid-area: name;
+  font-size: 18px;
+  line-height: 28px;
+}
+.date {
+  grid-area: date;
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 12px;
+  line-height: 22px;
+}
+.tags {
+  color: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  min-width: 40px;
+  margin-right: 5px;
+}
+.likes {
+  grid-area: likes;
+  font-size: 12px;
+}
+.avatar {
+  grid-area: avatar;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+}
+.container {
+  grid-area: container;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: "title likesContainer";
+}
+.likesContainer {
+  grid-area: likesContainer;
+}
+.description {
+  font-size: 12px;
+  line-height: 22px;
+  color: rgba(0, 0, 0, 0.5);
+  margin-right: 13rem;
+  margin-top: 1.5rem;
+}
+.body {
+  font-size: 18px;
+  line-height: 25px;
+  margin-top: 2rem;
+  margin-right: 1rem;
+}
+.tagBox {
+  grid-area: tags;
+  display: flex;
+}

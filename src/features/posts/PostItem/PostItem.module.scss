@@ -1,0 +1,94 @@
+.post {
+  width: 940px;
+  height: 140px;
+  background-color: white;
+  margin-top: 2rem;
+  overflow: hidden;
+  padding-bottom: 25px;
+}
+.info {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+.about {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 7px;
+  margin-left: 10px;
+}
+.title {
+  color: rgba(24, 144, 255, 1);
+  font-size: 20px;
+  line-height: 28px;
+  margin-bottom: 7px;
+  text-decoration: none;
+}
+.tags {
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  color: rgba(0, 0, 0, 0.5);
+  margin: 0.1rem;
+  padding: 0.08rem;
+  height: 20px;
+  font-size: 12px;
+  overflow-wrap: break-word;
+  white-space: wrap;
+  max-width: 420px;
+}
+.img {
+  width: 46px;
+  height: 46px;
+  border-radius: 5rem;
+  margin-right: 0.7rem;
+  margin-top: 0.5rem;
+}
+.button {
+  padding: 0;
+  border: none;
+  color: inherit;
+  background-color: transparent;
+  cursor: pointer;
+  justify-self: flex-end;
+  width: 16px;
+  height: 16px;
+  margin-top: 12px;
+  margin-left: 12px;
+}
+.likes {
+  margin-top: 12px;
+  margin-left: 5px;
+}
+.article {
+  font-style: 12px;
+  line-height: 22px;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+.block {
+  display: flex;
+  justify-content: start;
+  align-items: flex-start;
+}
+.author {
+  margin-top: 7px;
+  margin-bottom: 0;
+  margin-right: 5px;
+  font-size: 18px;
+  color: rgba(0, 0, 0, 0.85);
+  line-height: 28px;
+}
+.date {
+  margin: 0;
+  margin-right: 5px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.5);
+}
+.user {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.tagBox {
+  display: flex;
+}

@@ -1,0 +1,81 @@
+.box {
+  width: 390px;
+  min-height: 600px;
+  margin-top: 6rem;
+  font-family: "Roboto", sans-serif;
+}
+.title {
+  font-weight: 500;
+  font-size: 20px;
+  text-align: center;
+  line-height: 28px;
+}
+.input {
+  width: 320px;
+  height: 40px;
+  border: 1px solid rgba(217, 217, 217, 1);
+  border-radius: 5px;
+  color: rgba(191, 191, 191, 1);
+  font-size: 16px;
+  line-height: 22px;
+  padding-left: 0.5rem;
+  margin-top: 3px;
+  margin-bottom: 8px;
+}
+.text {
+  font-size: 14px;
+  line-height: 22px;
+  color: rgba(89, 89, 89, 1);
+
+  margin-left: 10px;
+}
+.inputTitle {
+  color: rgba(38, 38, 38, 1);
+}
+.checkboxContainer {
+  display: flex;
+  align-items: flex-start;
+}
+.divider {
+  margin-top: 10px;
+  margin-bottom: 8px;
+}
+.signText {
+  color: rgba(24, 144, 255, 1);
+}
+.accountText {
+  color: rgba(140, 140, 140, 1);
+  margin-right: 4px;
+}
+.signBox {
+  display: flex;
+  font-size: 12px;
+  line-height: 20px;
+  justify-content: center;
+}
+input[type="submit"] {
+  width: 320px;
+  height: 40px;
+  background-color: rgba(24, 144, 255, 1);
+  color: rgba(255, 255, 255, 1);
+  border: 0;
+  border-radius: 4px;
+  margin-top: 1rem;
+  font-size: 16px;
+  line-height: 24px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+input[type="submit"]:hover {
+  opacity: 1;
+}
+
+input[type="submit"]:active {
+  transition: 0.3s all;
+  transform: translateY(3px);
+  border: 1px solid transparent;
+  opacity: 0.8;
+}
+.box p {
+  color: rgba(245, 34, 45, 1);
+}
