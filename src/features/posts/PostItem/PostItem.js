@@ -6,12 +6,13 @@ import { MarkdownLayer } from "../../../components/MarkdownLayer";
 
 export const PostItem = ({ post }) => {
   return (
+    // <div>{post.title}</div>
     <div className={styles.post}>
       <div className={styles.info}>
         <div className={styles.block}>
           <div className={styles.about}>
             <Link to={`/postView/${post.slug}`} className={styles.title}>
-              {post.description.length > 40
+              {post.description && post.description.length > 40
                 ? post.description.substring(0, 40) + "..."
                 : post.description}
             </Link>
@@ -19,7 +20,9 @@ export const PostItem = ({ post }) => {
               {post.tagList.length
                 ? post.tagList.map((tag) => (
                     <div className={styles.tags} key={nanoid()}>
-                      {tag.length > 35 ? tag.substring(0, 35) + "..." : tag}{" "}
+                      {tag && tag.length > 35
+                        ? tag.substring(0, 35) + "..."
+                        : tag}{" "}
                     </div>
                   ))
                 : ""}
@@ -41,7 +44,7 @@ export const PostItem = ({ post }) => {
       <article className={styles.article}>
         <MarkdownLayer
           props={
-            post.body.length > 100
+            post.body && post.body.length > 100
               ? post.body.substring(0, 100) + "..."
               : post.body
           }

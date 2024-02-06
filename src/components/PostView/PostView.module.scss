@@ -1,14 +1,15 @@
 .post {
   width: 940px;
-  min-height: 870px;
-  margin-top: 2rem;
+  max-height: none;
+  overflow-y: auto;
+  margin: 0 auto;
 }
 .header {
   display: grid;
   grid-template-columns: 1fr 90px 50px;
   grid-template-areas:
-    "container  name avatar"
-    "tags  date avatar";
+    "container  name-date avatar"
+    "tags  name-date avatar";
   justify-items: start;
   align-items: center;
 }
@@ -29,6 +30,7 @@
   font-weight: 400;
   font-size: 20px;
   line-height: 22px;
+  margin-bottom: 5px;
 }
 .name {
   grid-area: name;
@@ -45,7 +47,12 @@
   color: rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(0, 0, 0, 0.5);
   min-width: 40px;
-  margin-right: 5px;
+  margin-right: 0.1rem;
+  padding: 0.08rem;
+  min-height: 20px;
+  font-size: 12px;
+  white-space: pre-wrap;
+  height: auto;
 }
 .likes {
   grid-area: likes;
@@ -59,9 +66,7 @@
 }
 .container {
   grid-area: container;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-areas: "title likesContainer";
+  display: flex;
 }
 .likesContainer {
   grid-area: likesContainer;
@@ -70,8 +75,10 @@
   font-size: 12px;
   line-height: 22px;
   color: rgba(0, 0, 0, 0.5);
-  margin-right: 13rem;
+  margin-right: 5rem;
   margin-top: 1.5rem;
+  justify-self: flex-start;
+  margin-left: 0;
 }
 .body {
   font-size: 18px;
@@ -82,4 +89,30 @@
 .tagBox {
   grid-area: tags;
   display: flex;
+}
+.nameDateContainer {
+  display: flex;
+  flex-direction: column;
+  grid-area: name-date;
+}
+.descriptionContainer {
+  display: flex;
+  width: 880px;
+  justify-content: space-between;
+}
+.editButton {
+  color: rgba(82, 196, 26, 1);
+  border: 1px solid rgba(82, 196, 26, 1);
+  margin-left: 1rem;
+  width: 65px;
+  height: 31px;
+}
+.deleteButton {
+  width: 78px;
+  height: 31px;
+}
+.buttons {
+  display: flex;
+  margin-top: 1.5rem;
+  justify-self: end;
 }

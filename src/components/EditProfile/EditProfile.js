@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import styles from "../EditProfile/EditProfile.module.scss";
 import { Card } from "antd";
+import { useEditUsersProfileMutation } from "../../features/users/usersSlice";
 
 export const EditProfile = () => {
   const {
@@ -13,10 +14,27 @@ export const EditProfile = () => {
     mode: "onBlur",
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
-    reset();
+  const [editUsersProfile, { data, isLoading }] = useEditUsersProfileMutation();
+
+  const onSubmit = async (data) => {
+    try {
+      const newData = {
+        username: data.username,
+        email: data.email,
+        bio: "",
+        image: data.image,
+      };
+      const token = JSON.parse(localStorage.getItem("token"));
+      console.log(newData);
+      await editUsersProfile({
+        data: newData,
+        token: token,
+      }).unwrap();
+    } finally {
+      // reset();
+    }
   };
+  // console.log(isLoading);
 
   return (
     <Card className={styles.box}>
@@ -29,7 +47,7 @@ export const EditProfile = () => {
             id="username"
             className={styles.input}
             placeholder="Username"
-            {...register("Username", {
+            {...register("username", {
               required: "This field is required!",
               minLength: {
                 value: 3,
@@ -41,7 +59,7 @@ export const EditProfile = () => {
               },
             })}
           />
-          {errors?.Username && <p>{errors?.Username?.message}</p>}
+          {errors?.username && <p>{errors?.username?.message}</p>}
         </label>
         <label htmlFor="email">
           <div className={styles.inputTitle}>Email address</div>
@@ -50,7 +68,7 @@ export const EditProfile = () => {
             id="email"
             placeholder="Email address"
             className={styles.input}
-            {...register("Email", {
+            {...register("email", {
               required: "This field is required!",
               pattern: {
                 value: /^[^\s()<>@,;:\/]+@\w[\w\.-]+\.[a-z]{2,}$/i,
@@ -58,7 +76,7 @@ export const EditProfile = () => {
               },
             })}
           />
-          {errors?.Email && <p>{errors?.Email?.message}</p>}
+          {errors?.email && <p>{errors?.email?.message}</p>}
         </label>
         <label htmlFor="password">
           <div className={styles.inputTitle}>New password</div>
@@ -67,7 +85,7 @@ export const EditProfile = () => {
             id="password"
             placeholder="New password"
             className={styles.input}
-            {...register("Password", {
+            {...register("password", {
               required: "This field is required!",
               minLength: {
                 value: 6,
@@ -79,7 +97,7 @@ export const EditProfile = () => {
               },
             })}
           />
-          {errors?.Password && <p>{errors?.Password?.message}</p>}
+          {errors?.password && <p>{errors?.password?.message}</p>}
         </label>
         <label htmlFor="avatarImage">
           <div className={styles.inputTitle}>Avatar image (url)</div>
@@ -88,17 +106,18 @@ export const EditProfile = () => {
             id="avatarImage"
             placeholder="Avatar image"
             className={styles.input}
-            {...register("Avatar", {
+            {...register("avatar", {
               required: "This field is required!",
             })}
           />
-          {errors?.Avatar && <p>{errors?.Avatar?.message}</p>}
+          {errors?.avatar && <p>{errors?.avatar?.message}</p>}
         </label>
         <input
           className={styles.button}
           type="submit"
           value="Save"
           disabled={!isValid}
+          onClick={handleSubmit(onSubmit)}
         />
       </form>
     </Card>

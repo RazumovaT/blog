@@ -1,35 +1,59 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import styles from "../CreateProfile/CreateProfile.module.scss";
+import styles from "../SignUp/SignUp.module.scss";
 import { Card, Divider, Checkbox } from "antd";
+import { Link, useNavigate } from "react-router-dom";
+import { useRegisterNewUserMutation } from "../../features/users/usersSlice";
 
-export const CreateProfile = () => {
+export const SignUp = () => {
+  const navigate = useNavigate("");
+  const [registerNewUser, { data: user, isLoading }] =
+    useRegisterNewUserMutation();
+
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
     reset,
+    watch,
   } = useForm({
     mode: "onBlur",
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
-    reset();
+  const onSignUpSubmit = async (data) => {
+    let newObj;
+    try {
+      newObj = {
+        username: data.username,
+        email: data.email,
+        password: data.password,
+      };
+      await registerNewUser(newObj).unwrap();
+      window.localStorage.setItem("isLoggedIn", JSON.stringify(true));
+      window.dispatchEvent(new Event("storage"));
+      navigate("/articles");
+    } finally {
+      reset();
+    }
   };
+  useEffect(() => {
+    if (user) {
+      window.localStorage.setItem("token", JSON.stringify(user.user.token));
+    }
+  }, [user]);
 
   return (
     <Card className={styles.box}>
-      <p className={styles.title}>Create new account</p>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <div className={styles.title}>Create new account</div>
+      <form onSubmit={handleSubmit(onSignUpSubmit)}>
         <label htmlFor="username">
           <div className={styles.inputTitle}>Username</div>
           <input
             type="text"
             id="username"
-            className={styles.input}
+            className={errors?.username ? styles.errorInput : styles.input}
             placeholder="Username"
-            {...register("Username", {
+            {...register("username", {
               required: "This field is required!",
               minLength: {
                 value: 3,
@@ -41,7 +65,7 @@ export const CreateProfile = () => {
               },
             })}
           />
-          {errors?.Username && <p>{errors?.Username?.message}</p>}
+          {errors?.username && <p>{errors?.username?.message}</p>}
         </label>
         <label htmlFor="email">
           <div className={styles.inputTitle}>Email address</div>
@@ -49,8 +73,8 @@ export const CreateProfile = () => {
             type="email"
             id="email"
             placeholder="Email address"
-            className={styles.input}
-            {...register("Email", {
+            className={errors?.email ? styles.errorInput : styles.input}
+            {...register("email", {
               required: "This field is required!",
               pattern: {
                 value: /^[^\s()<>@,;:\/]+@\w[\w\.-]+\.[a-z]{2,}$/i,
@@ -58,16 +82,16 @@ export const CreateProfile = () => {
               },
             })}
           />
-          {errors?.Email && <p>{errors?.Email?.message}</p>}
+          {errors?.email && <p>{errors?.email?.message}</p>}
         </label>
         <label htmlFor="password">
-          <div className={styles.inputTitle}>New password</div>
+          <div className={styles.inputTitle}>Password</div>
           <input
             type="password"
             id="password"
             placeholder="Password"
-            className={styles.input}
-            {...register("Password", {
+            className={errors?.password ? styles.errorInput : styles.input}
+            {...register("password", {
               required: "This field is required!",
               minLength: {
                 value: 6,
@@ -79,15 +103,17 @@ export const CreateProfile = () => {
               },
             })}
           />
-          {errors?.Password && <p>{errors?.Password?.message}</p>}
+          {errors?.password && <p>{errors?.password?.message}</p>}
         </label>
         <label htmlFor="repeatPassword">
-          <div className={styles.inputTitle}>New password</div>
+          <div className={styles.inputTitle}>Repeat password</div>
           <input
             type="password"
             id="repeatPassword"
             placeholder="Repeat password"
-            className={styles.input}
+            className={
+              errors?.repeatPassword ? styles.errorInput : styles.input
+            }
             {...register("repeatPassword", {
               required: "This field is required!",
               minLength: {
@@ -98,26 +124,41 @@ export const CreateProfile = () => {
                 value: 20,
                 message: "Your password needs to be less than 20 characters.",
               },
+              validate: (value) => {
+                if (watch("password") !== value) {
+                  return "Your passwords don`t match!";
+                }
+              },
             })}
           />
           {errors?.repeatPassword && <p>{errors?.repeatPassword?.message}</p>}
         </label>
         <Divider className={styles.divider} />
         <div className={styles.checkboxContainer}>
-          <Checkbox />
+          <input
+            type="checkbox"
+            {...register("checkbox", {
+              required:
+                "You should agree to the processing personal information",
+            })}
+          />
           <span className={styles.text}>
             I agree to the processing of my personal information
           </span>
         </div>
+        {errors?.checkbox && <p>{errors?.checkbox?.message}</p>}
         <input
           className={styles.button}
           type="submit"
           value="Create"
           disabled={!isValid}
+          onClick={handleSubmit(onSignUpSubmit)}
         />
         <div className={styles.signBox}>
-          <p className={styles.accountText}>Already have an account?</p>
-          <p className={styles.signText}>Sing in.</p>
+          <span className={styles.accountText}>Already have an account?</span>
+          <Link to="/signIn" className={styles.signText}>
+            Sing in.
+          </Link>
         </div>
       </form>
     </Card>

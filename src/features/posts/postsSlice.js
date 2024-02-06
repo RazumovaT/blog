@@ -2,11 +2,11 @@ import { postApi } from "../api/apiSlice";
 import { format } from "date-fns";
 import { createEntityAdapter, createSelector, nanoid } from "@reduxjs/toolkit";
 
-export const postsAdapter = createEntityAdapter({
-  selectId: (post) => (post.id = nanoid()),
-});
+// export const postsAdapter = createEntityAdapter({
+//   selectId: (post) => (post.id = nanoid()),
+// });
 
-export const initialState = postsAdapter.getInitialState();
+// export const initialState = postsAdapter.getInitialState();
 
 export const extendedPostApi = postApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -19,20 +19,20 @@ export const extendedPostApi = postApi.injectEndpoints({
           }
           return post;
         });
-        return postsAdapter.setAll(initialState, transformedPosts);
+        const articlesCount = response.articlesCount;
+        // return postsAdapter.setAll(initialState, transformedPosts);
+        return { transformedPosts, articlesCount };
       },
-      providesTags: (result) => [
-        { type: "Posts", id: "LIST" },
-        ...result.ids.map((id) => ({ type: "Posts", id })),
-      ],
-    }),
-    getNumberOfPosts: builder.query({
-      query: () => `/articles`,
-      transformResponse: (response) => {
-        const postsNumber = response.articlesCount;
-        return postsNumber;
-      },
-      providesTags: ["Posts"],
+      providesTags: (result, error, arg) =>
+        result
+          ? [
+              ...result.transformedPosts.map(({ id }) => ({
+                type: "Post",
+                id,
+              })),
+              "Post",
+            ]
+          : ["Post"],
     }),
     getSinglePost: builder.query({
       query: (slug) => `/articles/${slug}`,
@@ -40,9 +40,42 @@ export const extendedPostApi = postApi.injectEndpoints({
         return post.article;
       },
     }),
-    // sendPost: builder.mutation({
-    //     query: () => ""
-    // })
+    sendPost: builder.mutation({
+      query: ({ data, token }) => ({
+        url: "/articles",
+        method: "POST",
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+        body: {
+          article: data,
+        },
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: "Post", id: arg.id }],
+    }),
+    updatePost: builder.mutation({
+      query: ({ slug, token, data }) => ({
+        url: `/articles/${slug}`,
+        method: "PUT",
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+        body: {
+          article: data,
+        },
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: "Post", id: arg.id }],
+    }),
+    deletePost: builder.mutation({
+      query: ({ slug, token }) => ({
+        url: `/articles/${slug}`,
+        method: "DELETE",
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: "Post", id: arg.id }],
+    }),
   }),
 });
 
@@ -70,4 +103,7 @@ export const {
   useGetPostsQuery,
   useGetNumberOfPostsQuery,
   useGetSinglePostQuery,
+  useSendPostMutation,
+  useDeletePostMutation,
+  useUpdatePostMutation,
 } = extendedPostApi;

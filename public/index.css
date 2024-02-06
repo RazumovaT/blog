@@ -7,8 +7,6 @@ body {
   font-family: "Inter", sans-serif;
   font-weight: 400;
   background-color: rgba(235, 238, 243, 1);
-  display: flex;
-  justify-content: center;
   box-sizing: border-box;
   height: 100%;
   width: 100%;

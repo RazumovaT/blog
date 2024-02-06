@@ -1,119 +1,210 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "../PostForm/PostForm.module.scss";
 import { Card } from "antd";
-import { nanoid } from "@reduxjs/toolkit";
+import { useForm, useFieldArray } from "react-hook-form";
+import {
+  useSendPostMutation,
+  useUpdatePostMutation,
+} from "../../features/posts/postsSlice";
+import { useNavigate, useParams } from "react-router-dom";
 
-export const PostForm = () => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [text, setText] = useState("");
-  const [tag, setTag] = useState("");
-  const [tagArray, setTagArray] = useState([]);
+export const PostForm = ({ title, description, text, tagList }) => {
+  const { slug } = useParams();
+  const navigate = useNavigate();
+  const [sendPost, { data: post }] = useSendPostMutation();
+  const [updatePost, { data: editPost }] = useUpdatePostMutation();
 
-  let tagContent = tagArray.map((el) => {
-    return (
-      <div className={styles.tags} key={nanoid()}>
-        <label htmlFor="tag">
-          <input
-            type="text"
-            id="tag"
-            placeholder="Tag"
-            className={styles.tag}
-            value={el}
-            onChange={(e) => setTag(e.target.value)}
-          />
-        </label>
-        <button
-          type="button"
-          className={styles.deleteButton}
-          onClick={() => handleTagDelete(el)}
-        >
-          Delete
-        </button>
-      </div>
-    );
+  const newList = tagList?.map((el) => ({ name: el }));
+  const {
+    register,
+    control,
+    formState: { errors, isValid },
+    handleSubmit,
+    reset,
+  } = useForm({
+    defaultValues: {
+      title: title || "",
+      description: description || "",
+      text: text || "",
+      tagList: newList || [{ name: "" }],
+    },
+    mode: "onBlur",
   });
 
-  const handleTagSubmit = (e) => {
-    e.preventDefault();
-    setTagArray([...tagArray, tag]);
-    setTag("");
+  const isEdit = Boolean(title && description && text);
+  console.log(isEdit);
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "tagList",
+    // rules: {
+    //   minLength: {
+    //     value: 1,
+    //     message: "Your tag should contain at least 1 letter!",
+    //   },
+    //   required: true,
+    // },
+  });
+
+  const onPostCreateSubmit = async (data) => {
+    try {
+      const tagsFromObject = data.tagList.map((el) => {
+        return el.name;
+      });
+      const newData = {
+        title: data.title,
+        description: data.description,
+        body: data.text,
+        tagList: tagsFromObject,
+      };
+
+      const token = JSON.parse(localStorage.getItem("token"));
+      await sendPost({ data: newData, token: token }).unwrap();
+      navigate("/articles");
+    } finally {
+      reset();
+    }
   };
 
-  const handleTagDelete = (el) => {
-    const newTagArray = tagArray.filter((tag) => el !== tag);
-    setTagArray(newTagArray);
+  const onPostEditSubmit = async (data) => {
+    try {
+      const tagsFromObject = data.tagList.map((el) => {
+        return el.name;
+      });
+      const newData = {
+        title: data.title,
+        description: data.description,
+        body: data.text,
+        tagList: tagsFromObject,
+      };
+
+      const token = JSON.parse(localStorage.getItem("token"));
+      await updatePost({ data: newData, token: token, slug: slug }).unwrap();
+      navigate("/articles");
+    } finally {
+      reset();
+    }
   };
 
   return (
-    <div>
-      <Card className={styles.card}>
-        <div className={styles.header}>Create new article</div>
-        <form>
-          <label htmlFor="title">
-            <div>Title</div>
-            <input
-              type="text"
-              id="title"
-              placeholder="Title"
-              className={styles.title}
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </label>
-          <label htmlFor="description">
-            <div>Short description</div>
-            <input
-              type="text"
-              id="description"
-              placeholder="Title"
-              className={styles.title}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </label>
-          <label htmlFor="text">
-            <div>Text</div>
-            <textarea
-              type="text"
-              id="text"
-              placeholder="Text"
-              className={styles.text}
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-            />
-          </label>
-
-          <div>Tags</div>
-          <div className={styles.tags}>
-            <label htmlFor="tag">
-              <input
-                type="text"
-                id="tag"
-                placeholder="Tag"
-                className={styles.tag}
-                value={tag}
-                onChange={(e) => setTag(e.target.value)}
-                required
-              />
-            </label>
-            <button type="button" className={styles.deleteButton}>
-              Delete
-            </button>
-            <button
-              type="button"
-              className={styles.addButton}
-              onClick={(e) => handleTagSubmit(e)}
-            >
-              Add tag
-            </button>
-          </div>
-          {tagContent}
-          <button type="button" className={styles.sendButton}>
-            Send
-          </button>
-        </form>
-      </Card>
-    </div>
+    <form>
+      <label htmlFor="title">
+        <div>Title</div>
+        <input
+          type="text"
+          id="title"
+          placeholder="Title"
+          className={styles.title}
+          {...register("title", {
+            required: "This field is required!",
+            maxLength: {
+              value: 5000,
+              message: "Your title is too long",
+            },
+            minLength: {
+              value: 1,
+              message: "Your title should contain at least 1 letter!",
+            },
+          })}
+        />
+        {errors?.title && <p>{errors?.title?.message}</p>}
+      </label>
+      <label htmlFor="description">
+        <div>Short description</div>
+        <input
+          type="text"
+          id="description"
+          placeholder="Description"
+          className={styles.title}
+          {...register("description", {
+            required: "This field is required!",
+            maxLength: {
+              value: 5000,
+              message: "Your text is too long",
+            },
+            minLength: {
+              value: 1,
+              message: "Your text should contain at least 1 letter!",
+            },
+          })}
+        />
+        {errors?.description && <p>{errors?.description?.message}</p>}
+      </label>
+      <label htmlFor="text">
+        <div>Text</div>
+        <textarea
+          type="text"
+          id="text"
+          placeholder="Text"
+          className={styles.text}
+          {...register("text", {
+            required: "This field is required!",
+            maxLength: {
+              value: 5000,
+              message: "Your text is too long",
+            },
+            minLength: {
+              value: 1,
+              message: "Your text should contain at least 1 letter!",
+            },
+          })}
+        />
+        {errors?.text && <p>{errors?.text?.message}</p>}
+      </label>
+      <div className={styles.tagsBox}>
+        <div>
+          {fields.map((field, index) => {
+            return (
+              <section key={field.id}>
+                <label htmlFor="tag">
+                  <input
+                    ref={register}
+                    className={styles.tag}
+                    placeholder="Tag"
+                    id="tag"
+                    {...register(`tagList[${index}].name`)}
+                  />
+                  <button
+                    type="button"
+                    className={styles.deleteButton}
+                    onClick={() => remove(index)}
+                  >
+                    Delete
+                  </button>
+                </label>
+              </section>
+            );
+          })}
+        </div>
+        <button
+          type="button"
+          className={styles.addButton}
+          onClick={() =>
+            append({
+              tag: "tag",
+            })
+          }
+        >
+          Add tag
+        </button>
+      </div>
+      {isEdit ? (
+        <input
+          type="submit"
+          className={styles.sendButton}
+          value="Send"
+          disabled={!isValid}
+          onClick={handleSubmit(onPostEditSubmit)}
+        />
+      ) : (
+        <input
+          type="submit"
+          className={styles.sendButton}
+          value="Send"
+          disabled={!isValid}
+          onClick={handleSubmit(onPostCreateSubmit)}
+        />
+      )}
+    </form>
   );
 };
