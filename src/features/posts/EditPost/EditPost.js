@@ -1,14 +1,15 @@
 import React from "react";
 import { Card } from "antd";
 import styles from "../EditPost/EditPost.module.scss";
-import { PostForm } from "../../components/PostForm/PostForm";
+import { PostForm } from "../PostForm/PostForm";
 import { useParams } from "react-router-dom";
-import { useGetSinglePostQuery } from "../posts/postsSlice";
+import { useGetSinglePostQuery } from "../postsSlice";
 
 export const EditPost = () => {
   const { slug } = useParams();
-  const { data: post } = useGetSinglePostQuery(slug);
-  console.log(post);
+  const token = JSON.parse(localStorage.getItem("token"));
+  const { data: post } = useGetSinglePostQuery({ slug: slug, token: token });
+
   return (
     <div>
       <Card className={styles.card}>
@@ -18,6 +19,7 @@ export const EditPost = () => {
           description={post?.description}
           text={post?.body}
           tagList={post?.tagList}
+          slug={slug}
         />
       </Card>
     </div>

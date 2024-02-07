@@ -6,7 +6,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-family: "Inter", sans-serif;
   font-weight: 400;
-  background-color: rgba(235, 238, 243, 1);
+  background-color: rgba(235, 238, 243, 1) !important;
   box-sizing: border-box;
   height: 100%;
   width: 100%;

@@ -9,7 +9,7 @@
 .info {
   display: flex;
   justify-content: space-between;
-  align-items: start;
+  align-items: flex-start;
 }
 .about {
   display: flex;
@@ -56,8 +56,9 @@
   margin-left: 12px;
 }
 .likes {
-  margin-top: 12px;
+  margin-top: 14px;
   margin-left: 5px;
+  font-size: 12px;
 }
 .article {
   font-style: 12px;
@@ -67,7 +68,7 @@
 }
 .block {
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: flex-start;
 }
 .author {

@@ -1,6 +1,4 @@
 import { postApi } from "../api/apiSlice";
-import { format } from "date-fns";
-import { createEntityAdapter, createSelector, nanoid } from "@reduxjs/toolkit";
 
 export const extendedUserApi = postApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -30,7 +28,15 @@ export const extendedUserApi = postApi.injectEndpoints({
           Authorization: `Token ${token}`,
           Accept: `application/json;charset=utf-8`,
         },
-        body: { data },
+        body: {
+          user: {
+            username: data.username,
+            email: data.email,
+            avatar: data.avatar,
+            bio: "",
+            image: data.image,
+          },
+        },
       }),
     }),
   }),

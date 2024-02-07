@@ -1,47 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "../PostList/PostList.module.scss";
 import { Pagination } from "antd";
-import {
-  useGetPostsQuery,
-  useGetNumberOfPostsQuery,
-  // selectPostsIds,
-  // selectAllPosts,
-  // selectNumberOfPost,
-  extendedPostApi,
-  postsAdapter,
-  initialState,
-} from "../postsSlice";
-import { useSelector } from "react-redux";
+import { useGetPostsQuery } from "../postsSlice";
 import { PostItem } from "../PostItem/PostItem";
 import { nanoid } from "@reduxjs/toolkit";
-import { createSelector } from "@reduxjs/toolkit";
 import { Spin } from "antd";
 
-export const PostList = () => {
+export const PostList = ({ logged }) => {
   const [page, setPage] = useState(1);
 
-  const offsetCount = (page - 1) * 10;
+  const offset = (page - 1) * 5;
 
-  const { data: posts, isLoading, isSuccess } = useGetPostsQuery(offsetCount);
+  let token = JSON.parse(window.localStorage.getItem("token"));
 
-  // const selectPostsResult =
-  //   extendedPostApi.endpoints.getPosts.select(offsetCount);
-
-  // const selectPostsData = createSelector(
-  //   selectPostsResult,
-  //   (postsResult) => postsResult.data
-  // );
-
-  // const {
-  //   selectAll: selectAllPosts,
-  //   selectById: selectPostById,
-  //   selectIds: selectPostsIds,
-  // } = postsAdapter.getSelectors(
-  //   (state) => selectPostsData(state) ?? initialState
-  // );
-
-  // const posts = useSelector(selectAllPosts);
-  console.log(posts?.transformedPosts);
+  const {
+    data: posts,
+    isLoading,
+    isSuccess,
+  } = useGetPostsQuery({ offset: offset, token: token });
 
   let content;
 
@@ -53,7 +29,7 @@ export const PostList = () => {
         <div className={styles.posts}>
           {isSuccess &&
             posts.transformedPosts.map((post) => {
-              return <PostItem key={nanoid()} post={post} />;
+              return <PostItem key={nanoid()} post={post} logged={logged} />;
             })}
           <Pagination
             style={{ marginTop: "2rem" }}

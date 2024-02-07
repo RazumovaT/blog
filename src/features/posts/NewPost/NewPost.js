@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "../NewPost/NewPost.module.scss";
 import { Card } from "antd";
-import { PostForm } from "../../components/PostForm/PostForm";
+import { PostForm } from "../PostForm/PostForm";
 import { Navigate } from "react-router-dom";
 
 export const NewPost = ({ logged }) => {

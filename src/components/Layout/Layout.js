@@ -1,15 +1,19 @@
 import React from "react";
 import styles from "../Layout/Layout.module.scss";
 import { Link, useNavigate, Outlet } from "react-router-dom";
-import { PostList } from "../../features/posts/PostList/PostList";
 
-export const Layout = ({ logged }) => {
+export const Layout = ({ logged, user }) => {
   const navigate = useNavigate();
+
   const onLogOutSubmit = () => {
     window.localStorage.setItem("isLoggedIn", "false");
+    window.localStorage.removeItem("user");
+    window.localStorage.removeItem("token");
+
     window.dispatchEvent(new Event("storage"));
     navigate("/", { replace: true });
   };
+
   return (
     <div className={styles.wrapper}>
       <header className={styles.header}>
@@ -24,15 +28,19 @@ export const Layout = ({ logged }) => {
               </button>
             </Link>
             <Link to="/profile" className={styles.name}>
-              John Weedy
+              {user?.username}
             </Link>
             <Link to="/profile">
               {
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/5556/5556499.png"
+                  src={
+                    user?.image ||
+                    "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg"
+                  }
                   className={styles.avatar}
+                  alt="avatar"
                 />
-              }{" "}
+              }
             </Link>
             <button
               className={styles.logoutButton}

@@ -1,17 +1,18 @@
 import { postApi } from "../api/apiSlice";
 import { format } from "date-fns";
-import { createEntityAdapter, createSelector, nanoid } from "@reduxjs/toolkit";
-
-// export const postsAdapter = createEntityAdapter({
-//   selectId: (post) => (post.id = nanoid()),
-// });
-
-// export const initialState = postsAdapter.getInitialState();
 
 export const extendedPostApi = postApi.injectEndpoints({
   endpoints: (builder) => ({
     getPosts: builder.query({
-      query: (offset) => `/articles/?limit=5&offset=${offset}`,
+      query: (args) => {
+        const { offset, token } = args;
+        return {
+          url: `/articles/?limit=5&offset=${offset}`,
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        };
+      },
       transformResponse: (response) => {
         const transformedPosts = response.articles.map((post) => {
           if (post?.createdAt) {
@@ -20,7 +21,6 @@ export const extendedPostApi = postApi.injectEndpoints({
           return post;
         });
         const articlesCount = response.articlesCount;
-        // return postsAdapter.setAll(initialState, transformedPosts);
         return { transformedPosts, articlesCount };
       },
       providesTags: (result, error, arg) =>
@@ -35,10 +35,16 @@ export const extendedPostApi = postApi.injectEndpoints({
           : ["Post"],
     }),
     getSinglePost: builder.query({
-      query: (slug) => `/articles/${slug}`,
+      query: ({ slug, token }) => ({
+        url: `/articles/${slug}`,
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      }),
       transformResponse: (post) => {
         return post.article;
       },
+      providesTags: ["Post"],
     }),
     sendPost: builder.mutation({
       query: ({ data, token }) => ({
@@ -76,6 +82,26 @@ export const extendedPostApi = postApi.injectEndpoints({
       }),
       invalidatesTags: (result, error, arg) => [{ type: "Post", id: arg.id }],
     }),
+    favoritePost: builder.mutation({
+      query: ({ slug, token }) => ({
+        url: `/articles/${slug}/favorite`,
+        method: "POST",
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: "Post", id: arg.id }],
+    }),
+    unfavoritePost: builder.mutation({
+      query: ({ slug, token }) => ({
+        url: `/articles/${slug}/favorite`,
+        method: "DELETE",
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: "Post", id: arg.id }],
+    }),
   }),
 });
 
@@ -101,9 +127,10 @@ export const extendedPostApi = postApi.injectEndpoints({
 
 export const {
   useGetPostsQuery,
-  useGetNumberOfPostsQuery,
   useGetSinglePostQuery,
   useSendPostMutation,
   useDeletePostMutation,
   useUpdatePostMutation,
+  useFavoritePostMutation,
+  useUnfavoritePostMutation,
 } = extendedPostApi;
