@@ -21,15 +21,12 @@ function App() {
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  const [user, setUser] = useState(
-    JSON.parse(window.localStorage.getItem("user"))
-  );
+  const [user, setUser] = useState("");
 
   const getCurrentUser = () => {
     setUser(JSON.parse(window.localStorage.getItem("user")));
   };
   useEffect(() => {
-    getCurrentUser();
     window.addEventListener("user", getCurrentUser);
     return () => window.removeEventListener("user", getCurrentUser);
   }, []);

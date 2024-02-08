@@ -3,13 +3,15 @@ import { postApi } from "../api/apiSlice";
 export const extendedUserApi = postApi.injectEndpoints({
   endpoints: (builder) => ({
     registerNewUser: builder.mutation({
-      query: (data) => ({
-        url: "/users",
-        method: "POST",
-        body: {
-          user: data,
-        },
-      }),
+      query: (data) => {
+        return {
+          url: "/users",
+          method: "POST",
+          body: {
+            user: data,
+          },
+        };
+      },
     }),
     loginExistingUser: builder.mutation({
       query: (data) => ({

@@ -54,6 +54,8 @@ export const EditProfile = ({ user: userData }) => {
     }
   }, [user]);
 
+  console.log(user);
+
   return (
     <>
       {isLoading ? (
@@ -81,7 +83,7 @@ export const EditProfile = ({ user: userData }) => {
                       "Your username needs to be less than 20 characters.",
                   },
                   validate: () => {
-                    if (watch("username") === userData.username) {
+                    if (watch("username") === userData?.username) {
                       return "Please, choose another username!";
                     }
                   },
@@ -103,7 +105,7 @@ export const EditProfile = ({ user: userData }) => {
                     message: "Wrong email address format!",
                   },
                   validate: () => {
-                    if (watch("email") !== userData.email) {
+                    if (watch("email") !== userData?.email) {
                       return "Your email is invalid!";
                     }
                   },

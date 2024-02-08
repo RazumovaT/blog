@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import styles from "../SignUp/SignUp.module.scss";
 import { Card, Divider, Spin } from "antd";
@@ -9,8 +9,7 @@ export const SignUp = () => {
   const [usernameError, setUsernameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const navigate = useNavigate("");
-  const [registerNewUser, { data: user, isLoading }] =
-    useRegisterNewUserMutation();
+  const [registerNewUser, { isLoading }] = useRegisterNewUserMutation();
 
   const {
     register,
@@ -30,8 +29,10 @@ export const SignUp = () => {
         email: data.email,
         password: data.password,
       };
-      await registerNewUser(newObj).unwrap();
+      const response = await registerNewUser(newObj).unwrap();
+      window.localStorage.setItem("token", JSON.stringify(response.user.token));
       window.localStorage.setItem("isLoggedIn", JSON.stringify(true));
+      window.localStorage.setItem("user", JSON.stringify(response.user));
       window.dispatchEvent(new Event("storage"));
       window.dispatchEvent(new Event("user"));
       navigate("/articles");
@@ -47,13 +48,6 @@ export const SignUp = () => {
       reset();
     }
   };
-  useEffect(() => {
-    if (user) {
-      window.dispatchEvent(new Event("user"));
-      window.localStorage.setItem("token", JSON.stringify(user.user.token));
-      window.localStorage.setItem("user", JSON.stringify(user.user));
-    }
-  }, [user]);
 
   return (
     <>

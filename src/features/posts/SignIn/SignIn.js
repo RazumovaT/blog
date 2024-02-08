@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Card, Spin } from "antd";
 import styles from "../SignIn/SignIn.module.scss";
 import { useForm } from "react-hook-form";
@@ -16,8 +16,7 @@ export const SignIn = () => {
     mode: "onBlur",
   });
 
-  const [loginExistingUser, { data: user, isLoading }] =
-    useLoginExistingUserMutation();
+  const [loginExistingUser, { isLoading }] = useLoginExistingUserMutation();
 
   const navigate = useNavigate();
 
@@ -25,11 +24,13 @@ export const SignIn = () => {
     let userData;
     try {
       userData = { email: data.email, password: data.password };
-      await loginExistingUser(userData).unwrap();
+      const response = await loginExistingUser(userData).unwrap();
+      window.localStorage.setItem("token", JSON.stringify(response.user.token));
       window.localStorage.setItem("isLoggedIn", JSON.stringify(true));
+      window.localStorage.setItem("user", JSON.stringify(response.user));
       window.dispatchEvent(new Event("storage"));
+      window.dispatchEvent(new Event("user"));
       navigate("/articles");
-      console.log(data);
     } catch (e) {
       setSignInError(true);
       setTimeout(() => setSignInError(false), 3000);
@@ -37,14 +38,6 @@ export const SignIn = () => {
       reset();
     }
   };
-
-  useEffect(() => {
-    if (user) {
-      window.localStorage.setItem("token", JSON.stringify(user.user.token));
-      window.localStorage.setItem("user", JSON.stringify(user.user));
-      window.dispatchEvent(new Event("user"));
-    }
-  }, [user]);
 
   return (
     <>
