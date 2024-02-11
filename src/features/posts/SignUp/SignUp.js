@@ -35,7 +35,7 @@ export const SignUp = () => {
       window.localStorage.setItem("user", JSON.stringify(response.user));
       window.dispatchEvent(new Event("storage"));
       window.dispatchEvent(new Event("user"));
-      navigate("/articles");
+      navigate("/");
     } catch (e) {
       if (e.data.errors.username) {
         setUsernameError(true);

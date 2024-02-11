@@ -1,8 +1,8 @@
 import React from "react";
-import styles from "../Layout/Layout.module.scss";
+import styles from "../Header/Header.module.scss";
 import { Link, useNavigate, Outlet } from "react-router-dom";
 
-export const Layout = ({ logged, user }) => {
+export const Header = ({ logged, user }) => {
   const navigate = useNavigate();
 
   const onLogOutSubmit = () => {
@@ -17,7 +17,7 @@ export const Layout = ({ logged, user }) => {
   return (
     <div className={styles.wrapper}>
       <header className={styles.header}>
-        <Link to="/articles" className={styles.title}>
+        <Link to="/" className={styles.title}>
           Realworld Blog
         </Link>
         {logged ? (

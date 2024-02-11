@@ -5,9 +5,8 @@ import { PostForm } from "../PostForm/PostForm";
 import { useParams } from "react-router-dom";
 import { useGetSinglePostQuery } from "../postsSlice";
 
-export const EditPost = () => {
+export const EditPost = ({ token }) => {
   const { slug } = useParams();
-  const token = JSON.parse(localStorage.getItem("token"));
   const { data: post } = useGetSinglePostQuery({ slug: slug, token: token });
 
   return (
@@ -20,6 +19,7 @@ export const EditPost = () => {
           text={post?.body}
           tagList={post?.tagList}
           slug={slug}
+          token={token}
         />
       </Card>
     </div>

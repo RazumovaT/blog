@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../PostList/PostList.module.scss";
 import { Pagination } from "antd";
 import { useGetPostsQuery } from "../postsSlice";
@@ -6,13 +6,7 @@ import { PostItem } from "../PostItem/PostItem";
 import { nanoid } from "@reduxjs/toolkit";
 import { Spin } from "antd";
 
-export const PostList = ({ logged }) => {
-  const [page, setPage] = useState(1);
-
-  const offset = (page - 1) * 5;
-
-  let token = JSON.parse(window.localStorage.getItem("token"));
-
+export const PostList = ({ logged, page, setPage, offset, token }) => {
   const {
     data: posts,
     isLoading,
@@ -29,7 +23,14 @@ export const PostList = ({ logged }) => {
         <div className={styles.posts}>
           {isSuccess &&
             posts.transformedPosts.map((post) => {
-              return <PostItem key={nanoid()} post={post} logged={logged} />;
+              return (
+                <PostItem
+                  key={nanoid()}
+                  post={post}
+                  logged={logged}
+                  token={token}
+                />
+              );
             })}
           <Pagination
             style={{ marginTop: "2rem" }}

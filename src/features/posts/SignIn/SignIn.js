@@ -15,6 +15,7 @@ export const SignIn = () => {
   } = useForm({
     mode: "onBlur",
   });
+  
 
   const [loginExistingUser, { isLoading }] = useLoginExistingUserMutation();
 
@@ -30,7 +31,7 @@ export const SignIn = () => {
       window.localStorage.setItem("user", JSON.stringify(response.user));
       window.dispatchEvent(new Event("storage"));
       window.dispatchEvent(new Event("user"));
-      navigate("/articles");
+      navigate("/");
     } catch (e) {
       setSignInError(true);
       setTimeout(() => setSignInError(false), 3000);

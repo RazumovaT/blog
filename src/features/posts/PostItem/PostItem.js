@@ -8,22 +8,21 @@ import {
   useUnfavoritePostMutation,
 } from "../postsSlice";
 
-export const PostItem = ({ post, logged }) => {
-  const [favoritePost, { data: response }] = useFavoritePostMutation();
-  const [unfavoritePost, { data }] = useUnfavoritePostMutation();
+export const PostItem = ({ post, logged, token }) => {
+  const [favoritePost] = useFavoritePostMutation();
+  const [unfavoritePost] = useUnfavoritePostMutation();
 
-  const onPostFavorite = async (slug) => {
+  const onPostFavorite = async (e, slug) => {
     try {
-      let token = JSON.parse(window.localStorage.getItem("token"));
-
+      e.preventDefault();
       await favoritePost({ slug: slug, token: token }).unwrap();
     } finally {
     }
   };
 
-  const onPostUnfavorite = async (slug) => {
+  const onPostUnfavorite = async (e, slug) => {
     try {
-      let token = JSON.parse(window.localStorage.getItem("token"));
+      e.preventDefault();
       await unfavoritePost({ slug: slug, token: token }).unwrap();
     } finally {
     }
@@ -34,7 +33,7 @@ export const PostItem = ({ post, logged }) => {
       <button
         type="button"
         className={styles.button}
-        onClick={() => cb(post.slug)}
+        onClick={(e) => cb(e, post.slug)}
         disabled={!logged}
       >
         {post.favorited ? "❤️" : "♡"}

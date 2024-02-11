@@ -12,12 +12,10 @@ import {
 import { nanoid } from "@reduxjs/toolkit";
 import { MarkdownLayer } from "../../../components/MarkdownLayer";
 
-export const PostView = ({ logged }) => {
+export const PostView = ({ logged, token, user }) => {
   const { slug } = useParams();
   const navigate = useNavigate();
 
-  const token = JSON.parse(localStorage.getItem("token"));
-  const user = JSON.parse(localStorage.getItem("user"));
 
   const { data: post } = useGetSinglePostQuery({ slug, token });
   const [deletePost, { data }] = useDeletePostMutation();
@@ -27,7 +25,7 @@ export const PostView = ({ logged }) => {
   const onDeleteSubmit = async (slug) => {
     try {
       await deletePost({ slug: slug, token: token }).unwrap();
-      navigate("/articles");
+      navigate("/");
     } catch (e) {
       console.log(e);
     }

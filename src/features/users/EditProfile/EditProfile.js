@@ -35,7 +35,7 @@ export const EditProfile = ({ user: userData }) => {
         data: newData,
         token: token,
       }).unwrap();
-      navigate("/articles");
+      navigate("/");
     } catch (e) {
       if (e.status === 422) {
         setUsernameError(true);
@@ -54,7 +54,7 @@ export const EditProfile = ({ user: userData }) => {
     }
   }, [user]);
 
-  console.log(user);
+
 
   return (
     <>
@@ -162,3 +162,4 @@ export const EditProfile = ({ user: userData }) => {
     </>
   );
 };
+ 

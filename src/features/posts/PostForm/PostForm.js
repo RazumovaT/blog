@@ -5,9 +5,15 @@ import { useSendPostMutation, useUpdatePostMutation } from "../postsSlice";
 import { useNavigate } from "react-router-dom";
 import { Spin } from "antd";
 
-export const PostForm = ({ title, description, text, tagList, slug }) => {
+export const PostForm = ({
+  title,
+  description,
+  text,
+  tagList,
+  slug,
+  token,
+}) => {
   const navigate = useNavigate();
-  const token = JSON.parse(localStorage.getItem("token"));
   const [sendPost, { isLoading: sendLoading }] = useSendPostMutation();
   const [updatePost, { isLoading: updateLoading }] = useUpdatePostMutation();
 
@@ -55,7 +61,7 @@ export const PostForm = ({ title, description, text, tagList, slug }) => {
       };
 
       await sendPost({ data: newData, token: token }).unwrap();
-      navigate("/articles");
+      navigate("/");
     } catch (e) {
     } finally {
       reset();
@@ -75,7 +81,7 @@ export const PostForm = ({ title, description, text, tagList, slug }) => {
       };
 
       await updatePost({ data: newData, token: token, slug: slug }).unwrap();
-      navigate("/articles");
+      navigate("/");
     } catch (e) {
       console.log(e);
     } finally {
