@@ -16,7 +16,6 @@ export const PostView = ({ logged, token, user }) => {
   const { slug } = useParams();
   const navigate = useNavigate();
 
-
   const { data: post } = useGetSinglePostQuery({ slug, token });
   const [deletePost, { data }] = useDeletePostMutation();
   const [favoritePost] = useFavoritePostMutation();
@@ -57,8 +56,6 @@ export const PostView = ({ logged, token, user }) => {
       </button>
     );
   };
-
-  console.log(data);
 
   return (
     post && (
@@ -112,7 +109,13 @@ export const PostView = ({ logged, token, user }) => {
                 <Button danger>Delete</Button>
               </Popconfirm>
 
-              <Link to={`/edit/${post.slug}`}>
+              <Link
+                to={
+                  user?.username === post.author.username
+                    ? `/edit/${post.slug}`
+                    : "/"
+                }
+              >
                 <Button className={styles.editButton}>Edit</Button>
               </Link>
             </div>

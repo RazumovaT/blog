@@ -35,6 +35,7 @@ export const SignUp = () => {
       window.localStorage.setItem("user", JSON.stringify(response.user));
       window.dispatchEvent(new Event("storage"));
       window.dispatchEvent(new Event("user"));
+      reset();
       navigate("/");
     } catch (e) {
       if (e.data.errors.username) {
@@ -44,8 +45,6 @@ export const SignUp = () => {
         setEmailError(true);
         setTimeout(() => setEmailError(false), 3000);
       }
-    } finally {
-      reset();
     }
   };
 
@@ -62,7 +61,11 @@ export const SignUp = () => {
               <input
                 type="text"
                 id="username"
-                className={errors?.username ? styles.errorInput : styles.input}
+                className={
+                  errors?.username || usernameError || emailError
+                    ? styles.errorInput
+                    : styles.input
+                }
                 placeholder="Username"
                 {...register("username", {
                   required: "This field is required!",
@@ -85,7 +88,11 @@ export const SignUp = () => {
                 type="email"
                 id="email"
                 placeholder="Email address"
-                className={errors?.email ? styles.errorInput : styles.input}
+                className={
+                  errors?.email || usernameError || emailError
+                    ? styles.errorInput
+                    : styles.input
+                }
                 {...register("email", {
                   required: "This field is required!",
                   pattern: {
@@ -102,7 +109,11 @@ export const SignUp = () => {
                 type="password"
                 id="password"
                 placeholder="Password"
-                className={errors?.password ? styles.errorInput : styles.input}
+                className={
+                  errors?.password || usernameError || emailError
+                    ? styles.errorInput
+                    : styles.input
+                }
                 {...register("password", {
                   required: "This field is required!",
                   minLength: {
@@ -125,7 +136,9 @@ export const SignUp = () => {
                 id="repeatPassword"
                 placeholder="Repeat password"
                 className={
-                  errors?.repeatPassword ? styles.errorInput : styles.input
+                  errors?.repeatPassword || usernameError || emailError
+                    ? styles.errorInput
+                    : styles.input
                 }
                 {...register("repeatPassword", {
                   required: "This field is required!",

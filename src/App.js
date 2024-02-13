@@ -13,14 +13,19 @@ import { extendedPostApi } from "./features/posts/postsSlice";
 
 function App() {
   let token = JSON.parse(window.localStorage.getItem("token"));
+
   const [page, setPage] = useState(1);
+
+  const offset = (page - 1) * 5;
+
   const [user, setUser] = useState(
     JSON.parse(window.localStorage.getItem("user"))
   );
+
   const [logged, setLogged] = useState(
     JSON.parse(localStorage.getItem("isLoggedIn"))
   );
-  const offset = (page - 1) * 5;
+
   useEffect(() => {
     const onStorage = () => {
       setLogged(JSON.parse(localStorage.getItem("isLoggedIn")));
@@ -30,8 +35,9 @@ function App() {
   }, []);
 
   const getCurrentUser = () => {
-    setUser(JSON.parse(window.localStorage.getItem("user")));
+    setUser(JSON.parse(localStorage.getItem("user")));
   };
+
   useEffect(() => {
     window.addEventListener("user", getCurrentUser);
     return () => window.removeEventListener("user", getCurrentUser);
@@ -61,7 +67,10 @@ function App() {
           path="new-article"
           element={<NewPost logged={logged} token={token} />}
         />
-        <Route path="edit/:slug" element={<EditPost token={token} />} />
+        <Route
+          path="edit/:slug"
+          element={<EditPost token={token} user={user} />}
+        />
         <Route
           path="postView/:slug"
           element={<PostView logged={logged} token={token} user={user} />}

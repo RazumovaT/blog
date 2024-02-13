@@ -6,7 +6,7 @@ import { Navigate } from "react-router-dom";
 
 export const NewPost = ({ logged, token }) => {
   if (!logged) {
-    return <Navigate to="signIn" replace />;
+    return <Navigate to="/signIn" replace />;
   }
   return (
     <div>

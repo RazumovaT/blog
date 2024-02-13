@@ -54,8 +54,6 @@ export const EditProfile = ({ user: userData }) => {
     }
   }, [user]);
 
-
-
   return (
     <>
       {isLoading ? (
@@ -69,7 +67,11 @@ export const EditProfile = ({ user: userData }) => {
               <input
                 type="text"
                 id="username"
-                className={styles.input}
+                className={
+                  errors?.username || usernameError
+                    ? styles.inputError
+                    : styles.input
+                }
                 placeholder="Username"
                 {...register("username", {
                   required: "This field is required!",
@@ -97,7 +99,11 @@ export const EditProfile = ({ user: userData }) => {
                 type="email"
                 id="email"
                 placeholder="Email address"
-                className={styles.input}
+                className={
+                  errors?.email || usernameError
+                    ? styles.inputError
+                    : styles.input
+                }
                 {...register("email", {
                   required: "This field is required!",
                   pattern: {
@@ -119,7 +125,11 @@ export const EditProfile = ({ user: userData }) => {
                 type="password"
                 id="password"
                 placeholder="New password"
-                className={styles.input}
+                className={
+                  errors?.password || usernameError
+                    ? styles.inputError
+                    : styles.input
+                }
                 {...register("password", {
                   required: "This field is required!",
                   minLength: {
@@ -141,7 +151,11 @@ export const EditProfile = ({ user: userData }) => {
                 type="url"
                 id="avatarImage"
                 placeholder="Avatar image"
-                className={styles.input}
+                className={
+                  errors?.avatar || usernameError
+                    ? styles.inputError
+                    : styles.input
+                }
                 {...register("avatar", {
                   required: "This field is required!",
                 })}
@@ -162,4 +176,3 @@ export const EditProfile = ({ user: userData }) => {
     </>
   );
 };
- 

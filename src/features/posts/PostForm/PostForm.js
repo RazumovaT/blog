@@ -59,9 +59,8 @@ export const PostForm = ({
         body: data.text,
         tagList: tagsFromObject,
       };
-
-      await sendPost({ data: newData, token: token }).unwrap();
-      navigate("/");
+      const response = await sendPost({ data: newData, token: token }).unwrap();
+      navigate(`/postView/${response.article.slug}`);
     } catch (e) {
     } finally {
       reset();
@@ -80,10 +79,13 @@ export const PostForm = ({
         tagList: tagsFromObject,
       };
 
-      await updatePost({ data: newData, token: token, slug: slug }).unwrap();
-      navigate("/");
+      const response = await updatePost({
+        data: newData,
+        token: token,
+        slug: slug,
+      }).unwrap();
+      navigate(`/postView/${response.article.slug}`);
     } catch (e) {
-      console.log(e);
     } finally {
       reset();
     }
@@ -101,7 +103,7 @@ export const PostForm = ({
               type="text"
               id="title"
               placeholder="Title"
-              className={styles.title}
+              className={errors?.title ? styles.titleError : styles.title}
               {...register("title", {
                 required: "This field is required!",
                 maxLength: {
@@ -122,7 +124,7 @@ export const PostForm = ({
               type="text"
               id="description"
               placeholder="Description"
-              className={styles.title}
+              className={errors?.description ? styles.titleError : styles.title}
               {...register("description", {
                 required: "This field is required!",
                 maxLength: {
@@ -143,7 +145,7 @@ export const PostForm = ({
               type="text"
               id="text"
               placeholder="Text"
-              className={styles.text}
+              className={errors?.text ? styles.textError : styles.text}
               {...register("text", {
                 required: "This field is required!",
                 maxLength: {
@@ -166,7 +168,11 @@ export const PostForm = ({
                     <label htmlFor="tag">
                       <input
                         ref={register}
-                        className={styles.tag}
+                        className={
+                          errors.tagList?.[index]?.name
+                            ? styles.tagError
+                            : styles.tag
+                        }
                         placeholder="Tag"
                         id="tag"
                         {...register(`tagList[${index}].name`, {
@@ -181,6 +187,9 @@ export const PostForm = ({
                         Delete
                       </button>
                     </label>
+                    {errors.tagList?.[index]?.name && (
+                      <p>This can't be empty!</p>
+                    )}
                   </section>
                 );
               })}
@@ -197,7 +206,7 @@ export const PostForm = ({
               Add tag
             </button>
           </div>
-          <p>{errors.tagList?.root?.message}</p>
+
           {isEdit ? (
             <input
               type="submit"
